@@ -3,33 +3,17 @@ this is a dockerized version of the [install & usage instructions of esp8266-rto
 
 The following instructions are valid for ESP8266 chips
 
-# Prerequisites
-
-## Project directory structure
-
-It is important that your project's root directory has the following files and folders:
-
-```
-/
-|-> main/
-    |-> ... source files ...
-    |-> CMakeLists.txt
-    |-> component.mk
-|-> CMakeLists.txt
-|-> Makefile
-```
-
-see the [SDK's example projects](https://github.com/espressif/ESP8266_RTOS_SDK/tree/master/examples) for more details these files
+Refer to [the esp8266-rtos-sdk documentation](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/api-guides/build-system.html#example-project) for more details on the build system
 
 ## Build the toolchain docker image
 `docker build . -t esp-rtos-sdk`
 
 # Usage
 ## Build your project
-`docker run -it --rm -v $PWD:/project -w /project esp-rtos-sdk make`
+`docker run -it --rm -v $HOME/path/to/your/project/root_directory:/project -w /project esp-rtos-sdk make`
 
 ## Flash your ESP chip
-`docker run -it --rm -v $PWD:/project --privileged -v /dev:/dev -w /project esp-rtos-sdk make flash`
+`docker run -it --rm -v $HOME/path/to/your/project/root_directory:/project --privileged -v /dev:/dev -w /project esp-rtos-sdk make flash`
 
 ## Monitor the ESP chip's serial output
-`docker run -it --rm -v $PWD:/project --privileged -v /dev:/dev -w /project esp-rtos-sdk make monitor`
+`docker run -it --rm -v $HOME/path/to/your/project/root_directory:/project --privileged -v /dev:/dev -w /project esp-rtos-sdk make monitor`
