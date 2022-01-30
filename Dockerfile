@@ -2,9 +2,8 @@ ARG ESP8266_RTOS_SDK_VERSION=v3.3
 ARG XTENSA_LX106_RELEASE=1.22.0-100-ge567ec7-5.2.0
 ARG XTENSA_ESP32_RELEASE=1.22.0-80-g6c4433a-5.2.0
 
-FROM ubuntu:16.04 as distro
-RUN apt-get update
-    
+FROM ubuntu:18.04 as distro
+RUN apt-get update -y
 
 FROM distro as toolchain
 ARG XTENSA_LX106_RELEASE
@@ -18,7 +17,6 @@ RUN mkdir -p /tmp /toolchains \
     && mv /tmp/xtensa-lx106-elf /toolchains/lx106 \
     && mv /tmp/xtensa-esp32-elf /toolchains/esp32
 
-
 FROM distro as sdk
 ARG ESP8266_RTOS_SDK_VERSION
 RUN mkdir -p /sdk \
@@ -26,7 +24,6 @@ RUN mkdir -p /sdk \
     && git clone --branch "$ESP8266_RTOS_SDK_VERSION" --single-branch https://github.com/espressif/ESP8266_RTOS_SDK.git /sdk \
     && cd /sdk \
     && git submodule update --init --recursive
-
 
 FROM distro
 ARG ESP8266_RTOS_SDK_VERSION
@@ -45,10 +42,12 @@ RUN apt-get install -y \
         flex \
         bison \
         gperf \
-        python \
-        python-serial\
-        python-pip \
-    && python -m pip install --user -r /opt/sdk/requirements.txt
+        python3-serial\
+        python3-pip \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3 10 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 \
+    && pip install --user --upgrade pip \
+    && pip install --user -r /opt/sdk/requirements.txt
 
 LABEL ESP8266_RTOS_SDK_VERSION=$ESP8266_RTOS_SDK_VERSION \
       XTENSA_LX106_RELEASE=$XTENSA_LX106_RELEASE \
